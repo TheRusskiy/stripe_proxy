@@ -1,7 +1,7 @@
 class StripeCache
   CACHE_CALLS = [
-      {method: :get, url: /v1\/customers(?:\/)?$/},
-      {method: :get, url: /v1\/customers\/(.+?)(?:\/)?$/}
+      {method: :get, url: /v1\/events(?:\/)?$/},
+      {method: :get, url: /v1\/events\/(.+?)(?:\/)?$/}
   ]
 
   def fetch opts, &block

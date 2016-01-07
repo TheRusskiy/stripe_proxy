@@ -6,9 +6,15 @@ module Extensions
         alias _original_execute_request execute_request
 
         def execute_request(opts)
-          StripeCache.new.fetch opts do
+          res = StripeCache.new.fetch opts do
             RestClient::Request.execute(opts)
           end
+          res.instance_eval do
+            def body
+              self
+            end
+          end
+          res
         end
       end
     end

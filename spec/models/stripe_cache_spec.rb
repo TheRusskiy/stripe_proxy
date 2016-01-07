@@ -56,4 +56,11 @@ describe StripeCache do
     expect(r1).to eq(r2)
     expect(r1).not_to eq(r3)
   end
+
+  it 'overrides existing method' do # check that underlying gem code is still in place
+    opts = {}
+    expect(RestClient::Request).to receive(:execute).with opts
+    expect(Stripe.respond_to?(:_original_execute_request)).to be_truthy
+    Stripe.send(:_original_execute_request, opts)
+  end
 end

@@ -38,12 +38,17 @@ class StripeCache
   ####################### PRIVATE ####################
   private
 
-  SIMPLE_STORE = {}
   def fetch_by_key key
-    SIMPLE_STORE[key]
+    StripeCacheRecord.find_by_key(key).try(:value)
   end
 
   def store_by_key key, value
-    SIMPLE_STORE[key] = value
+    record = begin
+      StripeCacheRecord.new(key: key, value: value).tap(&:save!)
+    rescue ActiveRecord::RecordNotUnique => e
+      StripeCacheRecord.where(key: key).delete_all
+      StripeCacheRecord.new(key: key, value: value).tap(&:save!)
+    end
+    record.value
   end
 end

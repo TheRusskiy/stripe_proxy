@@ -55,6 +55,10 @@ gem 'rails_12factor', group: :production
 
 ruby '2.2.1'
 
+gem 'stripe', '~> 1.32.0'
+gem 'figaro'
+gem 'awesome_print'
+
 group :test do
   gem 'spring-commands-rspec'
   gem 'rspec-rails'

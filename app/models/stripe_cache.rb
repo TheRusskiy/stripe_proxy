@@ -1,6 +1,7 @@
 class StripeCache
   CACHE_CALLS = [
-      {method: :get, url: 'https://api.stripe.com/v1/customers'}
+      {method: :get, url: /v1\/customers(?:\/)?$/},
+      {method: :get, url: /v1\/customers\/(.+?)(?:\/)?$/}
   ]
 
   def fetch opts, &block
@@ -17,8 +18,21 @@ class StripeCache
   end
 
 
+  def cache_calls
+    @cache_calls || CACHE_CALLS
+  end
+
+  def cache_calls= value
+    @cache_calls = value
+  end
+
   def should_cache? opts
-    CACHE_CALLS.find{|c| c[:method] == opts[:method] && c[:url] == opts[:url]}
+    cache_calls.find{|c|
+      method_matches = c[:method] == opts[:method]
+      matches = opts[:url].match(c[:url])
+      url_matches = matches && (matches.length == 1 || matches.to_a[1..-1].none?{|m| m.include?('/')})
+      method_matches && url_matches
+    }
   end
 
   ####################### PRIVATE ####################
